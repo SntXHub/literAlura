@@ -1,29 +1,28 @@
 package com.literalura.literAlura.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Autor {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nombre;
-    private int fechaNacimiento;
-    private int fechaFallecimiento;
 
-    // Constructor por defecto
-    public Autor() {}
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Libro> libros;
 
-    // Constructor con parámetros
-    public Autor(Long id, String nombre, int fechaNacimiento, int fechaFallecimiento) {
-        this.id = id;
-        this.nombre = nombre;
-        this.fechaNacimiento = fechaNacimiento;
-        this.fechaFallecimiento = fechaFallecimiento;
-    }
+    @Column(name = "fecha_nacimiento")
+    private LocalDate fechaNacimiento;
 
-    // Getters y Setters
+    @Column(name = "fecha_fallecimiento")
+    private LocalDate fechaFallecimiento;
+
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -40,19 +39,7 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public int getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(int fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public int getFechaFallecimiento() {
-        return fechaFallecimiento;
-    }
-
-    public void setFechaFallecimiento(int fechaFallecimiento) {
-        this.fechaFallecimiento = fechaFallecimiento;
+    public void setLibros(List<Libro> libros) {
+        this.libros = libros;
     }
 }

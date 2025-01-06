@@ -6,8 +6,9 @@ import com.literalura.literAlura.repository.AutorRepository;
 import com.literalura.literAlura.repository.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDate;
 import java.util.List;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class LibroService {
@@ -37,7 +38,7 @@ public class LibroService {
     }
 
     // Obtener autores vivos en un año
-    public List<Autor> obtenerAutoresVivosEnAnio(int anio) {
+    public List<Autor> obtenerAutoresVivosEnAnio(LocalDate anio) {
         return autorRepository.findByFechaNacimientoBeforeAndFechaFallecimientoAfter(anio, anio);
     }
 
@@ -46,3 +47,4 @@ public class LibroService {
         return libroRepository.findByIdioma(idioma);
     }
 }
+
