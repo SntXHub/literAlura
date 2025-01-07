@@ -1,21 +1,29 @@
 package com.literalura.literAlura.service;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.literalura.literAlura.entity.Libro;
+import com.literalura.literAlura.service.GutendexResponse;
+import com.literalura.literAlura.service.LibroService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Service
 public class GutendexService {
 
     private final RestTemplate restTemplate;
 
+    @Autowired
     public GutendexService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public String obtenerLibrosPorTitulo(String titulo) {
+    // Método para obtener los libros por título
+    public List<Libro> obtenerLibrosPorTitulo(String titulo) {
         String url = "https://gutendex.com/books/?search=" + titulo;
-        return restTemplate.getForObject(url, String.class);
+        // Deserializa la respuesta JSON en un objeto de tipo GutendexResponse
+        GutendexResponse response = restTemplate.getForObject(url, GutendexResponse.class);
+        return response != null ? response.getLibros() : null;
     }
 }

@@ -9,9 +9,10 @@ import java.util.List;
 
 @Repository
 public interface AutorRepository extends JpaRepository<Autor, Long> {
-    List<Autor> findByFechaNacimientoBeforeAndFechaFallecimientoAfter(LocalDate fechaNacimiento, LocalDate fechaFallecimiento);
 
-    default Autor findByNombre(String autorNombre) {
-        return null;
-    }
+    // Encuentra autores vivos en un rango de fechas
+    List<Autor> findByFechaNacimientoBeforeAndFechaFallecimientoAfter(LocalDate fechaInicio, LocalDate fechaFin);
+
+    // Encuentra autores por nombre que contengan una palabra clave (mejor para búsquedas flexibles)
+    List<Autor> findByNombreContainingIgnoreCase(String nombre);
 }

@@ -1,34 +1,25 @@
 package com.literalura.literAlura.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class Libro {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "idioma")
-    private String idioma;
-
-    @Column(nullable = false)
     private String titulo;
+    private String autor;
+    private int anioPublicacion;
+    private String genero;
 
-    @ManyToOne
-    private Autor autor;
+    // Constructor
+    public Libro(Long id, String titulo, String autor, int anioPublicacion, String genero) {
+        this.id = id;
+        this.titulo = titulo;
+        this.autor = autor;
+        this.anioPublicacion = anioPublicacion;
+        this.genero = genero;
+    }
 
-    // Getters y setters
+    // Getters y Setters
     public Long getId() {
         return id;
-    }
-
-    public String getIdioma() {
-        return idioma;
-    }
-
-    public void setIdioma(String idioma) {
-        this.idioma = idioma;
     }
 
     public void setId(Long id) {
@@ -43,12 +34,40 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public Autor getAutor() {
+    public String getAutor() {
         return autor;
     }
 
-    public void setAutor(Autor autor) {
+    public void setAutor(String autor) {
         this.autor = autor;
+    }
+
+    public int getAnioPublicacion() {
+        return anioPublicacion;
+    }
+
+    public void setAnioPublicacion(int anioPublicacion) {
+        this.anioPublicacion = anioPublicacion;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
+    // Implementación de toString
+    @Override
+    public String toString() {
+        return "Libro{" +
+                "id=" + id +
+                ", titulo='" + titulo + '\'' +
+                ", autor='" + autor + '\'' +
+                ", anioPublicacion=" + anioPublicacion +
+                ", genero='" + genero + '\'' +
+                '}';
     }
 }
 

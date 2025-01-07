@@ -1,26 +1,36 @@
 package com.literalura.literAlura.entity;
 
-import jakarta.persistence.*;
-
-import java.time.LocalDate;
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import java.util.Date;
 
 @Entity
 public class Autor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nombre;
+    private String apellido;
+    private Date fechaNacimiento;
+    private Date fechaFallecimiento;
+    private String nacionalidad;
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Libro> libros;
+    // Constructor sin parámetros (necesario para JPA)
+    public Autor() {
+    }
 
-    @Column(name = "fecha_nacimiento")
-    private LocalDate fechaNacimiento;
-
-    @Column(name = "fecha_fallecimiento")
-    private LocalDate fechaFallecimiento;
+    // Constructor con parámetros
+    public Autor(Long id, String nombre, String apellido, Date fechaNacimiento, Date fechaFallecimiento, String nacionalidad) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fechaNacimiento = fechaNacimiento;
+        this.fechaFallecimiento = fechaFallecimiento;
+        this.nacionalidad = nacionalidad;
+    }
 
     // Getters y setters
     public Long getId() {
@@ -39,7 +49,35 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public void setLibros(List<Libro> libros) {
-        this.libros = libros;
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public Date getFechaFallecimiento() {
+        return fechaFallecimiento;
+    }
+
+    public void setFechaFallecimiento(Date fechaFallecimiento) {
+        this.fechaFallecimiento = fechaFallecimiento;
+    }
+
+    public String getNacionalidad() {
+        return nacionalidad;
+    }
+
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
     }
 }
