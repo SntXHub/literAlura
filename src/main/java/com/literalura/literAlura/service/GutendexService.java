@@ -1,8 +1,5 @@
 package com.literalura.literAlura.service;
-
 import com.literalura.literAlura.entity.Libro;
-import com.literalura.literAlura.service.GutendexResponse;
-import com.literalura.literAlura.service.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
