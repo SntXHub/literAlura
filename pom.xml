@@ -33,25 +33,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- Dependencia de Jakarta Persistence (JPA) -->
-		<dependency>
-			<groupId>jakarta.persistence</groupId>
-			<artifactId>jakarta.persistence-api</artifactId>
-			<version>3.1.0</version> <!-- Verifica si hay una versión más reciente -->
-		</dependency>
-
-		<!-- Dependencia de Hibernate (implementación de JPA) -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>6.1.7.Final</version> <!-- Verifica si hay una versión más reciente -->
-		</dependency>
-
 		<!-- Dependencia de PostgreSQL Driver -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.4</version> <!-- Usa la última versión disponible o la que prefieras -->
+			<version>42.7.4</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -61,7 +47,11 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
-		<!-- Otras dependencias adicionales que necesites -->
+		<!-- Dependencia para RestTemplate -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

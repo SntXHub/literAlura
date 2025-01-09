@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 public class Autor {
@@ -14,8 +14,8 @@ public class Autor {
     private Long id;
     private String nombre;
     private String apellido;
-    private Date fechaNacimiento;
-    private Date fechaFallecimiento;
+    private LocalDate fechaNacimiento;
+    private LocalDate fechaFallecimiento;
     private String nacionalidad;
 
     // Constructor sin parámetros (necesario para JPA)
@@ -23,7 +23,8 @@ public class Autor {
     }
 
     // Constructor con parámetros
-    public Autor(Long id, String nombre, String apellido, Date fechaNacimiento, Date fechaFallecimiento, String nacionalidad) {
+    public Autor(Long id, String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento,
+                 String nacionalidad) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -57,19 +58,19 @@ public class Autor {
         this.apellido = apellido;
     }
 
-    public Date getFechaNacimiento() {
+    public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(Date fechaNacimiento) {
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public Date getFechaFallecimiento() {
+    public LocalDate getFechaFallecimiento() {
         return fechaFallecimiento;
     }
 
-    public void setFechaFallecimiento(Date fechaFallecimiento) {
+    public void setFechaFallecimiento(LocalDate fechaFallecimiento) {
         this.fechaFallecimiento = fechaFallecimiento;
     }
 

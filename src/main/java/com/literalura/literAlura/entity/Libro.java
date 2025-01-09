@@ -4,25 +4,27 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 
 @Entity
 public class Libro {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String titulo;
-    private String autor;
-    private int anioPublicacion;
-    private String genero;
 
-    // Constructor
-    public Libro(Long id, String titulo, String autor, int anioPublicacion, String genero) {
-        this.id = id;
-        this.titulo = titulo;
-        this.autor = autor;
-        this.anioPublicacion = anioPublicacion;
-        this.genero = genero;
-    }
+    @Column(nullable = false)
+    private String titulo;
+
+    @Column(nullable = false)
+    private String autor;
+
+    // Opcionales, elimina si no los necesitas
+    @Column(nullable = true)
+    private Integer anioPublicacion;
+
+    @Column(nullable = true)
+    private String genero;
 
     // Getters y Setters
     public Long getId() {
@@ -49,11 +51,11 @@ public class Libro {
         this.autor = autor;
     }
 
-    public int getAnioPublicacion() {
+    public Integer getAnioPublicacion() {
         return anioPublicacion;
     }
 
-    public void setAnioPublicacion(int anioPublicacion) {
+    public void setAnioPublicacion(Integer anioPublicacion) {
         this.anioPublicacion = anioPublicacion;
     }
 
@@ -65,16 +67,14 @@ public class Libro {
         this.genero = genero;
     }
 
-    // Implementación de toString
     @Override
     public String toString() {
         return "Libro{" +
                 "id=" + id +
                 ", titulo='" + titulo + '\'' +
                 ", autor='" + autor + '\'' +
-                ", anioPublicacion=" + anioPublicacion +
-                ", genero='" + genero + '\'' +
+                ", anioPublicacion=" + (anioPublicacion != null ? anioPublicacion : "N/A") +
+                ", genero='" + (genero != null ? genero : "N/A") + '\'' +
                 '}';
     }
 }
-

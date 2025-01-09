@@ -82,4 +82,7 @@ public class AutorService {
                 .orElseThrow(() -> new RuntimeException("Autor no encontrado con id: " + id));
         autorRepository.delete(autor);
     }
+
+    public Iterable<Object> obtenerAutoresVivosEnAnio(int anio) {
+    }
 }
