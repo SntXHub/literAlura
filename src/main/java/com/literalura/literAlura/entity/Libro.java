@@ -4,29 +4,32 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
 
 @Entity
 public class Libro {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String titulo;
-
-    @Column(nullable = false)
     private String autor;
-
-    // Opcionales, elimina si no los necesitas
-    @Column(nullable = true)
-    private Integer anioPublicacion;
-
-    @Column(nullable = true)
+    private int anioPublicacion;
     private String genero;
+    private String idioma; // Asegúrate de que este atributo exista
 
-    // Getters y Setters
+    // Constructor vacío
+    public Libro() {}
+
+    // Constructor completo
+    public Libro(Long id, String titulo, String autor, int anioPublicacion, String genero, String idioma) {
+        this.id = id;
+        this.titulo = titulo;
+        this.autor = autor;
+        this.anioPublicacion = anioPublicacion;
+        this.genero = genero;
+        this.idioma = idioma;
+    }
+
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -51,11 +54,11 @@ public class Libro {
         this.autor = autor;
     }
 
-    public Integer getAnioPublicacion() {
+    public int getAnioPublicacion() {
         return anioPublicacion;
     }
 
-    public void setAnioPublicacion(Integer anioPublicacion) {
+    public void setAnioPublicacion(int anioPublicacion) {
         this.anioPublicacion = anioPublicacion;
     }
 
@@ -67,14 +70,26 @@ public class Libro {
         this.genero = genero;
     }
 
+    public String getIdioma() {
+        return idioma;
+    }
+
+    public void setIdioma(String idioma) {
+        this.idioma = idioma;
+    }
+
     @Override
     public String toString() {
         return "Libro{" +
                 "id=" + id +
                 ", titulo='" + titulo + '\'' +
                 ", autor='" + autor + '\'' +
-                ", anioPublicacion=" + (anioPublicacion != null ? anioPublicacion : "N/A") +
-                ", genero='" + (genero != null ? genero : "N/A") + '\'' +
+                ", anioPublicacion=" + anioPublicacion +
+                ", genero='" + genero + '\'' +
+                ", idioma='" + idioma + '\'' +
                 '}';
     }
 }
+
+
+

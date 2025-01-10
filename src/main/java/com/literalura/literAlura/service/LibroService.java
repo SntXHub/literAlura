@@ -6,13 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LibroService {
+    private final LibroRepository libroRepository;
 
     @Autowired
-    private LibroRepository libroRepository;
+    public LibroService(LibroRepository libroRepository) {
+        this.libroRepository = libroRepository;
+    }
 
     public List<Libro> buscarPorTitulo(String titulo) {
         return libroRepository.findByTituloContainingIgnoreCase(titulo);
@@ -22,19 +24,11 @@ public class LibroService {
         return libroRepository.findAll();
     }
 
-    public void borrarTodosLosLibros() {
-        libroRepository.deleteAll();
-    }
-
-    public void guardarLibro(Libro libro) {
-        libroRepository.save(libro);
-    }
-
-    public Optional<Libro> obtenerLibroPorId(Long id) {
-        return libroRepository.findById(id);
-    }
-
     public List<Libro> obtenerLibrosPorIdioma(String idioma) {
-        return libroRepository.findByIdioma(idioma);
+        return libroRepository.findByIdiomaIgnoreCase(idioma); // Usa el método correcto
+    }
+
+    public void eliminarLibroPorId(Long id) {
+        libroRepository.deleteById(id);
     }
 }

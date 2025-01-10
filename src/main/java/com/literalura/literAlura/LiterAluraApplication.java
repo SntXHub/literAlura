@@ -6,7 +6,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+// La anotación @SpringBootApplication habilita el escaneo de componentes
+@SpringBootApplication(scanBasePackages = "com.literalura.literAlura") // Escanea todos los paquetes hijos
 public class LiterAluraApplication implements CommandLineRunner {
 
 	@Autowired
@@ -18,6 +19,7 @@ public class LiterAluraApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		// Llamada al método para iniciar el menú principal
 		menuController.mostrarMenu();
 	}
 }
