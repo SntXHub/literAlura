@@ -1,4 +1,4 @@
-package com.literalura.literAlura.config; // Ubicación de la clase en el paquete config
+package com.literalura.literAlura.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

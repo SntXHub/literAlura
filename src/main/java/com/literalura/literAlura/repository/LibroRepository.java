@@ -8,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface LibroRepository extends JpaRepository<Libro, Long> {
-    // Método válido para buscar por título ignorando mayúsculas y minúsculas
+
+    // Buscar libros que contengan el título indicado
     List<Libro> findByTituloContainingIgnoreCase(String titulo);
+
+    // Buscar libros por idioma
+    List<Libro> findByIdioma(String idioma);
 }
