@@ -18,7 +18,7 @@ public class GutendexResponse {
     @JsonProperty("results")
     private List<GutendexBook> books;
 
-    // Getters y Setters
+    // Getters y setters
     public int getCount() {
         return count;
     }
@@ -51,3 +51,4 @@ public class GutendexResponse {
         this.books = books;
     }
 }
+

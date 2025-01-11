@@ -3,7 +3,6 @@ package com.literalura.literAlura.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
-import java.util.Map;
 
 public class GutendexBook {
 
@@ -19,13 +18,13 @@ public class GutendexBook {
     @JsonProperty("languages")
     private List<String> languages;
 
+    @JsonProperty("bookshelves")
+    private List<String> bookshelves;
+
     @JsonProperty("subjects")
     private List<String> subjects;
 
-    @JsonProperty("formats")
-    private GutendexFormats formats;
-
-    // Getters y Setters
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -58,6 +57,14 @@ public class GutendexBook {
         this.languages = languages;
     }
 
+    public List<String> getBookshelves() {
+        return bookshelves;
+    }
+
+    public void setBookshelves(List<String> bookshelves) {
+        this.bookshelves = bookshelves;
+    }
+
     public List<String> getSubjects() {
         return subjects;
     }
@@ -65,17 +72,5 @@ public class GutendexBook {
     public void setSubjects(List<String> subjects) {
         this.subjects = subjects;
     }
-
-    public GutendexFormats getFormats() {
-        return formats;
-    }
-
-    public void setFormats(GutendexFormats formats) {
-        this.formats = formats;
-    }
-
-    public Map<Object, Object> getBookshelves() {
-        Map<Object, Object> Bookshelves = Map.of();
-        return Bookshelves;
-    }
 }
+

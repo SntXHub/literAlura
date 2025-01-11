@@ -55,16 +55,15 @@ public class MenuController {
                     case 8 -> {
                         System.out.println("Saliendo del sistema. ¡Hasta luego!");
                         salir = true;
-                        break; // Asegúrate de terminar la ejecución
                     }
                     default -> System.out.println("Opción no válida. Intente de nuevo.");
                 }
-
             } catch (InputMismatchException e) {
                 System.out.println("Error: Entrada inválida. Por favor, ingrese un número.");
                 scanner.nextLine(); // Limpiar el buffer
             }
         }
+        scanner.close(); // Cerrar el scanner después de salir
     }
 
     private void buscarLibrosPorTitulo(Scanner scanner) {

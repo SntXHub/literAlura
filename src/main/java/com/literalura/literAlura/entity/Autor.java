@@ -33,6 +33,9 @@ public class Autor {
         this.nacionalidad = nacionalidad;
     }
 
+    public Autor(String name, Object o, Object o1, Object o2) {
+    }
+
     // Getters y setters
     public Long getId() {
         return id;
