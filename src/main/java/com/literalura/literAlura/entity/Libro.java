@@ -1,35 +1,42 @@
 package com.literalura.literAlura.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Libro {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // El ID es proporcionado por la API externa
+
+    @NotBlank(message = "El título no puede estar vacío")
     private String titulo;
+
+    @NotBlank(message = "El autor no puede estar vacío")
     private String autor;
-    private int anioPublicacion;
+
+    private Integer anio_Publicacion; // Año como Integer para soportar valores nulos
+
     private String genero;
-    private String idioma; // Asegúrate de que este atributo exista
+
+    @NotBlank(message = "El idioma no puede estar vacío")
+    private String idioma;
 
     // Constructor vacío
     public Libro() {}
 
     // Constructor completo
-    public Libro(Long id, String titulo, String autor, int anioPublicacion, String genero, String idioma) {
+    public Libro(Long id, String titulo, String autor, Integer anio_Publicacion, String genero, String idioma) {
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
-        this.anioPublicacion = anioPublicacion;
+        this.anio_Publicacion = anio_Publicacion;
         this.genero = genero;
         this.idioma = idioma;
     }
 
-    // Getters y setters
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -54,12 +61,12 @@ public class Libro {
         this.autor = autor;
     }
 
-    public int getAnioPublicacion() {
-        return anioPublicacion;
+    public Integer getAnio_Publicacion() {
+        return anio_Publicacion;
     }
 
-    public void setAnioPublicacion(int anioPublicacion) {
-        this.anioPublicacion = anioPublicacion;
+    public void setAnio_Publicacion(Integer anio_Publicacion) {
+        this.anio_Publicacion = anio_Publicacion;
     }
 
     public String getGenero() {
@@ -81,15 +88,16 @@ public class Libro {
     @Override
     public String toString() {
         return "Libro{" +
-                "id=" + id +
-                ", titulo='" + titulo + '\'' +
-                ", autor='" + autor + '\'' +
-                ", anioPublicacion=" + anioPublicacion +
-                ", genero='" + genero + '\'' +
-                ", idioma='" + idioma + '\'' +
+                "ID=" + id +
+                ", Título='" + titulo + '\'' +
+                ", Autor='" + autor + '\'' +
+                ", Año=" + (anio_Publicacion != null ? anio_Publicacion : "Desconocido") +
+                ", Género='" + (genero != null ? genero : "Desconocido") + '\'' +
+                ", Idioma='" + idioma + '\'' +
                 '}';
     }
 }
+
 
 
 

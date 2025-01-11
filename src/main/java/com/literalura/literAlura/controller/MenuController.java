@@ -31,7 +31,7 @@ public class MenuController {
         while (!salir) {
             System.out.println("\n*** Menú Principal ***");
             System.out.println("1. Buscar libros por título");
-            System.out.println("2. Buscar autor por nombre");
+            System.out.println("2. Buscar autor por nombre y/o apellido");
             System.out.println("3. Mostrar todos los libros");
             System.out.println("4. Mostrar todos los autores");
             System.out.println("5. Listar libros por idioma");
@@ -41,11 +41,12 @@ public class MenuController {
             System.out.print("Seleccione una opción: ");
 
             try {
-                int opcion = Integer.parseInt(scanner.nextLine()); // Usar nextLine para capturar toda la línea
+                int opcion = scanner.nextInt();
+                scanner.nextLine(); // Consumir la nueva línea
 
                 switch (opcion) {
                     case 1 -> buscarLibrosPorTitulo(scanner);
-                    case 2 -> buscarAutorPorNombre(scanner);
+                    case 2 -> buscarAutorPorNombreApellido(scanner);
                     case 3 -> mostrarTodosLosLibros();
                     case 4 -> mostrarTodosLosAutores();
                     case 5 -> listarLibrosPorIdioma(scanner);
@@ -53,36 +54,50 @@ public class MenuController {
                     case 7 -> eliminarLibroPorId(scanner);
                     case 8 -> {
                         System.out.println("Saliendo del sistema. ¡Hasta luego!");
-                        System.exit(0);
+                        salir = true; // Termina el bucle del menú
                     }
                     default -> System.out.println("Opción no válida. Intente de nuevo.");
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Error: Entrada inválida. Por favor, ingrese un número.");
-            }
 
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Entrada inválida. Por favor, ingrese un número.");
+                scanner.nextLine(); // Limpiar el buffer
+            }
         }
     }
 
     private void buscarLibrosPorTitulo(Scanner scanner) {
         System.out.print("Ingrese el título del libro: ");
         String titulo = scanner.nextLine();
-        List<Libro> libros = libroService.buscarPorTitulo(titulo);
 
-        if (libros.isEmpty()) {
-            System.out.println("No se encontraron libros con el título: " + titulo);
-        } else {
-            libros.forEach(System.out::println);
+        try {
+            List<Libro> libros = libroService.buscarOLlenarPorTitulo(titulo);
+
+            if (libros.isEmpty()) {
+                System.out.println("No se encontraron libros con el título: " + titulo);
+            } else {
+                System.out.println("Libros encontrados:");
+                libros.forEach(libro -> {
+                    System.out.println("Título: " + libro.getTitulo());
+                    System.out.println("Autor: " + libro.getAutor());
+                    System.out.println("Género: " + libro.getGenero());
+                    System.out.println("Idioma: " + libro.getIdioma());
+                    System.out.println("Año: " + libro.getAnio_Publicacion());
+                    System.out.println("---");
+                });
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
-    private void buscarAutorPorNombre(Scanner scanner) {
+    private void buscarAutorPorNombreApellido(Scanner scanner) {
         System.out.print("Ingrese el nombre o apellido del autor: ");
-        String nombre = scanner.nextLine();
-        List<AutorDTO> autores = autorService.buscarPorNombre(nombre);
+        String nombreOApellido = scanner.nextLine();
+        List<AutorDTO> autores = autorService.buscarPorNombreOApellido(nombreOApellido);
 
         if (autores.isEmpty()) {
-            System.out.println("No se encontraron autores con el nombre: " + nombre);
+            System.out.println("No se encontraron autores con el criterio: " + nombreOApellido);
         } else {
             autores.forEach(autor -> System.out.println(autor.getId() + ": " + autor.getNombre() + " " + autor.getApellido()));
         }
@@ -94,7 +109,7 @@ public class MenuController {
         if (libros.isEmpty()) {
             System.out.println("No hay libros registrados en el sistema.");
         } else {
-            libros.forEach(System.out::println);
+            libros.forEach(libro -> System.out.println(libro));
         }
     }
 
@@ -109,14 +124,14 @@ public class MenuController {
     }
 
     private void listarLibrosPorIdioma(Scanner scanner) {
-        System.out.print("Ingrese el idioma (por ejemplo, 'EN' para inglés): ");
-        String idioma = scanner.nextLine();
+        System.out.print("Ingrese el idioma (por ejemplo, 'ES' para español): ");
+        String idioma = scanner.nextLine().toUpperCase();
         List<Libro> libros = libroService.obtenerLibrosPorIdioma(idioma);
 
         if (libros.isEmpty()) {
             System.out.println("No se encontraron libros en el idioma: " + idioma);
         } else {
-            libros.forEach(System.out::println);
+            libros.forEach(libro -> System.out.println(libro));
         }
     }
 
@@ -141,13 +156,18 @@ public class MenuController {
         Long id = scanner.nextLong();
         scanner.nextLine();
 
-        try {
-            libroService.eliminarLibroPorId(id);
-            System.out.println("Libro eliminado correctamente.");
-        } catch (RuntimeException e) {
-            System.out.println("Error: " + e.getMessage());
+        System.out.print("¿Está seguro que desea eliminar el libro con ID " + id + "? (S/N): ");
+        String confirmacion = scanner.nextLine().toUpperCase();
+
+        if ("S".equals(confirmacion)) {
+            try {
+                libroService.eliminarLibroPorId(id);
+                System.out.println("Libro eliminado correctamente.");
+            } catch (RuntimeException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Operación cancelada.");
         }
     }
 }
-
-
