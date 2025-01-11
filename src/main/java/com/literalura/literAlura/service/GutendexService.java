@@ -1,35 +1,72 @@
 package com.literalura.literAlura.service;
 
+import com.literalura.literAlura.entity.GutendexBook;
+import com.literalura.literAlura.entity.GutendexResponse;
 import com.literalura.literAlura.entity.Libro;
-import com.literalura.literAlura.repository.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class GutendexService {
 
     private final RestTemplate restTemplate;
-    private final LibroRepository libroRepository;
 
     @Autowired
-    public GutendexService(RestTemplate restTemplate, LibroRepository libroRepository) {
+    public GutendexService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.libroRepository = libroRepository;
     }
 
-    // Método para obtener libros por título desde la API de Gutendex y guardarlos en la base de datos
-    public List<Libro> obtenerLibrosPorTitulo(String titulo) {
-        String url = "https://gutendex.com/books/?search=" + titulo;
-        GutendexResponse response = restTemplate.getForObject(url, GutendexResponse.class);
+    public Libro convertirAGutendexBook(GutendexBook book) {
+        String autor = book.getAuthors() != null && !book.getAuthors().isEmpty()
+                ? book.getAuthors().get(0).getName()
+                : "Desconocido";
 
-        if (response != null && response.getLibros() != null) {
-            List<Libro> libros = response.getLibros();
-            libroRepository.saveAll(libros); // Guardar los libros en la base de datos
+        Integer anioPublicacion = book.getSubjects() != null && !book.getSubjects().isEmpty()
+                ? extraerAnioDeSubject(book.getSubjects())
+                : -1;
+
+        return new Libro(
+                book.getId(),
+                book.getTitle(),
+                autor,
+                anioPublicacion,
+                book.getBookshelves() != null && !book.getBookshelves().isEmpty()
+                        ? (String) book.getBookshelves().get(0)
+                        : "Género desconocido",
+                book.getLanguages().get(0).toUpperCase()
+        );
+    }
+
+    private Integer extraerAnioDeSubject(List<String> subjects) {
+        return 0;
+    }
+
+    public List<Libro> buscarLibrosPorTitulo(String titulo) {
+        String url = "https://gutendex.com/books/?search=" + titulo;
+        try {
+            GutendexResponse response = restTemplate.getForObject(url, GutendexResponse.class);
+            List<Libro> libros = new ArrayList<>();
+            if (response != null && response.getBooks() != null) {
+                for (GutendexBook book : response.getBooks()) {
+                    String autor = book.getAuthors().isEmpty() ? "Desconocido" : book.getAuthors().get(0).getName();
+                    libros.add(new Libro(
+                            book.getId(),
+                            book.getTitle(),
+                            autor,
+                            null, // Año de publicación (no proporcionado)
+                            null, // Género (no proporcionado)
+                            book.getLanguages().isEmpty() ? "Desconocido" : book.getLanguages().get(0)
+                    ));
+                }
+            }
             return libros;
+        } catch (Exception e) {
+            System.err.println("Error al conectar con la API de Gutendex: " + e.getMessage());
+            return List.of();
         }
-        return List.of(); // Retorna una lista vacía si no hay resultados
     }
 }

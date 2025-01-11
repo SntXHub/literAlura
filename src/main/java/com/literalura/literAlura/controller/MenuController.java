@@ -54,7 +54,8 @@ public class MenuController {
                     case 7 -> eliminarLibroPorId(scanner);
                     case 8 -> {
                         System.out.println("Saliendo del sistema. ¡Hasta luego!");
-                        salir = true; // Termina el bucle del menú
+                        salir = true;
+                        break; // Asegúrate de terminar la ejecución
                     }
                     default -> System.out.println("Opción no válida. Intente de nuevo.");
                 }
@@ -82,7 +83,7 @@ public class MenuController {
                     System.out.println("Autor: " + libro.getAutor());
                     System.out.println("Género: " + libro.getGenero());
                     System.out.println("Idioma: " + libro.getIdioma());
-                    System.out.println("Año: " + libro.getAnio_Publicacion());
+                    System.out.println("Año: " + libro.getAnioPublicacion());
                     System.out.println("---");
                 });
             }
