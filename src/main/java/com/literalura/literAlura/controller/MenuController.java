@@ -1,6 +1,7 @@
 package com.literalura.literAlura.controller;
 
 import com.literalura.literAlura.dto.AutorDTO;
+import com.literalura.literAlura.entity.Autor;
 import com.literalura.literAlura.entity.Libro;
 import com.literalura.literAlura.service.AutorService;
 import com.literalura.literAlura.service.LibroService;
@@ -100,7 +101,9 @@ public class MenuController {
         if (autores.isEmpty()) {
             System.out.println("No se encontraron autores con el criterio: " + nombreOApellido);
         } else {
-            autores.forEach(autor -> System.out.println(autor.getId() + ": " + autor.getNombre() + " " + autor.getApellido()));
+            autores.stream()
+                    .distinct() // Evitar duplicados
+                    .forEach(autor -> System.out.println(autor.getNombre() + " " + autor.getApellido()));
         }
     }
 
@@ -125,14 +128,27 @@ public class MenuController {
     }
 
     private void listarLibrosPorIdioma(Scanner scanner) {
-        System.out.print("Ingrese el idioma (por ejemplo, 'ES' para español): ");
-        String idioma = scanner.nextLine().toUpperCase();
+        System.out.print("Ingrese el idioma: ");
+        String idioma = scanner.nextLine().trim().toLowerCase()
+                .replace("á", "a").replace("é", "e")
+                .replace("í", "i").replace("ó", "o")
+                .replace("ú", "u");
+
         List<Libro> libros = libroService.obtenerLibrosPorIdioma(idioma);
 
         if (libros.isEmpty()) {
-            System.out.println("No se encontraron libros en el idioma: " + idioma);
+            System.out.println("No hay libros en el idioma: " + idioma);
         } else {
-            libros.forEach(libro -> System.out.println(libro));
+            libros.forEach(libro -> {
+                System.out.println("Título: " + libro.getTitulo());
+                System.out.println("Autor: " + (libro.getAutor() != null
+                        ? libro.getAutor().getNombre() + " " + libro.getAutor().getApellido()
+                        : "Desconocido"));
+                System.out.println("Género: " + (libro.getGenero() != null ? libro.getGenero() : "Sin información"));
+                System.out.println("Idioma: " + libro.getIdioma());
+                System.out.println("Año: " + (libro.getAnioPublicacion() != null ? libro.getAnioPublicacion() : "Sin información"));
+                System.out.println("---");
+            });
         }
     }
 
@@ -141,14 +157,14 @@ public class MenuController {
         int anio = scanner.nextInt();
         scanner.nextLine();
 
-        LocalDate fechaInicio = LocalDate.of(anio, 1, 1);
-        LocalDate fechaFin = LocalDate.of(anio, 12, 31);
-        List<AutorDTO> autores = autorService.obtenerAutoresVivosEnAnio(fechaInicio, fechaFin);
+        LocalDate inicio = LocalDate.of(anio, 1, 1);
+        LocalDate fin = LocalDate.of(anio, 12, 31);
+        List<AutorDTO> autores = autorService.obtenerAutoresVivosEnAnio(inicio, fin);
 
         if (autores.isEmpty()) {
             System.out.println("No se encontraron autores vivos en el año: " + anio);
         } else {
-            autores.forEach(autor -> System.out.println(autor.getId() + ": " + autor.getNombre() + " " + autor.getApellido()));
+            autores.stream().distinct().forEach(autor -> System.out.println(autor.getNombre() + " " + autor.getApellido()));
         }
     }
 

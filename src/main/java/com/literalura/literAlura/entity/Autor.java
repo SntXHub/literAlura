@@ -4,8 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.time.LocalDate;
 
+import java.time.LocalDate;
 
 @Entity
 public class Autor {
@@ -13,35 +13,23 @@ public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String nombre; // Almacena el nombre completo del autor
+    private String nombre;
     private String apellido;
     private LocalDate fechaNacimiento;
     private LocalDate fechaFallecimiento;
     private String nacionalidad;
 
-    // Constructor vacío
-    public Autor() {}
+    public Autor() {
+    }
 
-    // Constructor completo
     public Autor(String nombreCompleto, String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento, String nacionalidad) {
-        this.nombre = nombreCompleto;
+        this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
         this.fechaFallecimiento = fechaFallecimiento;
         this.nacionalidad = nacionalidad;
     }
 
-    // Constructor simplificado para casos con nombre únicamente
-    public Autor(String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.fechaNacimiento = fechaNacimiento;
-        this.fechaFallecimiento = fechaFallecimiento;
-    }
-
-
-    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -92,13 +80,7 @@ public class Autor {
 
     @Override
     public String toString() {
-        return "Autor{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", fechaNacimiento=" + fechaNacimiento +
-                ", fechaFallecimiento=" + fechaFallecimiento +
-                ", nacionalidad='" + nacionalidad + '\'' +
-                '}';
+        return nombre + " " + apellido;
     }
 }
+

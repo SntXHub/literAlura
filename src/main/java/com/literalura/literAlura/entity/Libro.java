@@ -27,7 +27,8 @@ public class Libro {
     private String idioma;
 
     // Constructor vacío
-    public Libro() {}
+    public Libro() {
+    }
 
     // Constructor completo
     public Libro(Long id, String titulo, Autor autor, Integer anioPublicacion, String genero, String idioma) {
@@ -93,10 +94,10 @@ public class Libro {
         return "Libro{" +
                 "ID=" + id +
                 ", Título='" + titulo + '\'' +
-                ", Autor='" + (autor != null ? autor.getNombre() : "Desconocido") + '\'' +
-                ", Año=" + (anioPublicacion != null ? anioPublicacion : "Desconocido") +
-                ", Género='" + (genero != null ? genero : "Desconocido") + '\'' +
-                ", Idioma='" + idioma + '\'' +
+                ", Autor='" + (autor != null ? autor.getNombre() + " " + autor.getApellido() : "Desconocido") + '\'' +
+                ", Año=" + (anioPublicacion != null ? anioPublicacion : "Sin información") +
+                ", Género='" + (genero != null ? genero : "Sin información") + '\'' +
+                ", Idioma='" + (idioma != null ? idioma : "Sin información") + '\'' +
                 '}';
     }
 }
