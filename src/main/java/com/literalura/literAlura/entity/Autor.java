@@ -1,10 +1,11 @@
 package com.literalura.literAlura.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import java.time.LocalDate;
+
 
 @Entity
 public class Autor {
@@ -12,29 +13,33 @@ public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nombre;
+
+    private String nombre; // Almacena el nombre completo del autor
     private String apellido;
     private LocalDate fechaNacimiento;
     private LocalDate fechaFallecimiento;
     private String nacionalidad;
 
-    // Constructor sin parámetros (necesario para JPA)
-    public Autor() {
-    }
+    // Constructor vacío
+    public Autor() {}
 
-    // Constructor con parámetros
-    public Autor(Long id, String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento,
-                 String nacionalidad) {
-        this.id = id;
-        this.nombre = nombre;
+    // Constructor completo
+    public Autor(String nombreCompleto, String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento, String nacionalidad) {
+        this.nombre = nombreCompleto;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
         this.fechaFallecimiento = fechaFallecimiento;
         this.nacionalidad = nacionalidad;
     }
 
-    public Autor(String name, Object o, Object o1, Object o2) {
+    // Constructor simplificado para casos con nombre únicamente
+    public Autor(String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fechaNacimiento = fechaNacimiento;
+        this.fechaFallecimiento = fechaFallecimiento;
     }
+
 
     // Getters y setters
     public Long getId() {

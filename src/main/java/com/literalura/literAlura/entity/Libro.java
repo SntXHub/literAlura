@@ -3,43 +3,43 @@ package com.literalura.literAlura.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Libro {
 
     @Id
-    private Long id; // ID proporcionado por la API externa
+    private Long id;
 
     @NotBlank(message = "El título no puede estar vacío")
     private String titulo;
 
-    @NotBlank(message = "El autor no puede estar vacío")
-    private String autor;
+    @ManyToOne
+    @JoinColumn(name = "autor_id") // Relación con la tabla "autor"
+    private Autor autor;
 
-    @Column(name = "anio_publicacion", nullable = false)
-    private Integer anioPublicacion = -1; // Valor predeterminado para evitar nulos
+    private Integer anioPublicacion;
 
     private String genero;
 
     @NotBlank(message = "El idioma no puede estar vacío")
-    @Column(name = "idioma")
     private String idioma;
 
     // Constructor vacío
     public Libro() {}
 
     // Constructor completo
-    public Libro(Long id, String titulo, String autor, Integer anioPublicacion, String genero, String idioma) {
+    public Libro(Long id, String titulo, Autor autor, Integer anioPublicacion, String genero, String idioma) {
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
-        this.anioPublicacion = anioPublicacion != null ? anioPublicacion : -1; // Asignar valor predeterminado
+        this.anioPublicacion = (anioPublicacion != null && anioPublicacion > 0) ? anioPublicacion : -1; // Valor predeterminado
         this.genero = genero;
         this.idioma = idioma;
     }
 
-    // Getters y Setters
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -56,11 +56,11 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public String getAutor() {
+    public Autor getAutor() {
         return autor;
     }
 
-    public void setAutor(String autor) {
+    public void setAutor(Autor autor) {
         this.autor = autor;
     }
 
@@ -69,7 +69,7 @@ public class Libro {
     }
 
     public void setAnioPublicacion(Integer anioPublicacion) {
-        this.anioPublicacion = anioPublicacion != null ? anioPublicacion : -1; // Evitar nulos
+        this.anioPublicacion = anioPublicacion;
     }
 
     public String getGenero() {
@@ -93,14 +93,13 @@ public class Libro {
         return "Libro{" +
                 "ID=" + id +
                 ", Título='" + titulo + '\'' +
-                ", Autor='" + autor + '\'' +
-                ", Año=" + (anioPublicacion != null && anioPublicacion != -1 ? anioPublicacion : "Desconocido") +
+                ", Autor='" + (autor != null ? autor.getNombre() : "Desconocido") + '\'' +
+                ", Año=" + (anioPublicacion != null ? anioPublicacion : "Desconocido") +
                 ", Género='" + (genero != null ? genero : "Desconocido") + '\'' +
                 ", Idioma='" + idioma + '\'' +
                 '}';
     }
 }
-
 
 
 

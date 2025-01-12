@@ -54,7 +54,8 @@ public class MenuController {
                     case 7 -> eliminarLibroPorId(scanner);
                     case 8 -> {
                         System.out.println("Saliendo del sistema. ¡Hasta luego!");
-                        salir = true;
+                        scanner.close(); // Cerrar el Scanner
+                        System.exit(0); // Forzar cierre de la JVM
                     }
                     default -> System.out.println("Opción no válida. Intente de nuevo.");
                 }
