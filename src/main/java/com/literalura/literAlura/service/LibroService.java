@@ -83,10 +83,6 @@ public class LibroService {
      * @return una lista de libros en el idioma especificado
      */
     public List<Libro> obtenerLibrosPorIdioma(String idioma) {
-        List<Libro> libros = libroRepository.findByIdiomaIgnoreCase(idioma);
-        if (libros.isEmpty()) {
-            return List.of(); // Retorna lista vacía si no hay resultados
-        }
-        return libros;
+        return libroRepository.findByIdiomaIgnoreCase(idioma);
     }
 }

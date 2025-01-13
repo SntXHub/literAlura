@@ -89,23 +89,21 @@ public class GutendexService {
 
     private Autor procesarAutor(GutendexBook book) {
         if (book.getAuthors() == null || book.getAuthors().isEmpty()) {
-            return autorRepository.findByNombre(nombreCompleto)
+            return autorRepository.findByNombreAndApellido("Desconocido", "Sin información")
                     .orElseGet(() -> autorRepository.save(new Autor(
-                            nombre,
-                            apellido,
-                            firstAuthor.getBirthYear() != null ? LocalDate.of(firstAuthor.getBirthYear(), 1, 1) : null,
-                            firstAuthor.getDeathYear() != null ? LocalDate.of(firstAuthor.getDeathYear(), 1, 1) : null,
+                            "Desconocido", // Nombre
+                            "Sin información", // Apellido
+                            null,
+                            null,
                             "Sin información"
                     )));
         }
 
         var firstAuthor = book.getAuthors().get(0);
-        String nombreCompleto = firstAuthor.getName();
-        String[] partes = nombreCompleto.split(" ", 2); // Dividir nombre y apellido
-        String nombre = partes.length > 0 ? partes[0] : "Desconocido";
-        String apellido = partes.length > 1 ? partes[1] : "Sin información";
+        String nombre = firstAuthor.getName().split(" ")[0]; // Primera parte como nombre
+        String apellido = firstAuthor.getName().substring(nombre.length()).trim(); // El resto como apellido
 
-        return autorRepository.findByNombre(nombreCompleto)
+        return autorRepository.findByNombreAndApellido(nombre, apellido)
                 .orElseGet(() -> autorRepository.save(new Autor(
                         nombre,
                         apellido,
@@ -117,7 +115,7 @@ public class GutendexService {
 
     private String extraerGenero(GutendexBook book) {
         if (book.getBookshelves() != null && !book.getBookshelves().isEmpty()) {
-            return book.getBookshelves().get(0);
+            return book.getBookshelves().get(0).replace("Browsing:", "").trim(); // Eliminar prefijo
         }
         return "Sin información";
     }

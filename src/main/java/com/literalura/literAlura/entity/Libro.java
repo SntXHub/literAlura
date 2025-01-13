@@ -95,10 +95,10 @@ public class Libro {
         return "Libro{" +
                 "ID=" + id +
                 ", Título='" + titulo + '\'' +
-                ", Autor='" + (autor != null ? autor.getNombre() + " " + autor.getApellido() : "Desconocido") + '\'' +
+                ", Autor=" + autor +
                 ", Género='" + genero + '\'' +
                 ", Idioma='" + idioma + '\'' +
-                ", Año=" + (anioPublicacion != null && anioPublicacion != -1 ? anioPublicacion : "Sin información") +
+                ", Año=" + (anioPublicacion == null || anioPublicacion == -1 ? "Sin información" : anioPublicacion) +
                 '}';
     }
 }

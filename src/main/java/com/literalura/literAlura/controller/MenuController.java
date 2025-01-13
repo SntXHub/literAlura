@@ -131,13 +131,20 @@ public class MenuController {
 
     private void listarLibrosPorIdioma(Scanner scanner) {
         System.out.print("Ingrese el idioma: ");
-        String idiomaInput = scanner.nextLine().toLowerCase();
-        idiomaInput = Normalizer.normalize(idiomaInput, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+        String idiomaInput = scanner.nextLine().toLowerCase().trim();
+        String idiomaNormalizado = Normalizer.normalize(idiomaInput, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", ""); // Eliminar tildes
 
-        List<Libro> libros = libroService.obtenerLibrosPorIdioma(idiomaInput);
+        String idioma = switch (idiomaNormalizado) {
+            case "ingles" -> "Inglés";
+            case "espanol", "español" -> "Español";
+            case "frances", "francés" -> "Francés";
+            default -> idiomaNormalizado; // Mantener sin cambios si no está mapeado
+        };
 
+        List<Libro> libros = libroService.obtenerLibrosPorIdioma(idioma);
         if (libros.isEmpty()) {
-            System.out.println("No hay libros en el idioma: " + idiomaInput);
+            System.out.println("No hay libros en el idioma: " + idioma);
         } else {
             libros.forEach(libro -> System.out.println(libro));
         }
@@ -146,7 +153,7 @@ public class MenuController {
     private void listarAutoresVivosEnAnio(Scanner scanner) {
         System.out.print("Ingrese el año: ");
         int anio = scanner.nextInt();
-        scanner.nextLine();
+        scanner.nextLine(); // Consumir la nueva línea
 
         LocalDate inicio = LocalDate.of(anio, 1, 1);
         LocalDate fin = LocalDate.of(anio, 12, 31);
@@ -155,9 +162,7 @@ public class MenuController {
         if (autores.isEmpty()) {
             System.out.println("No se encontraron autores vivos en el año: " + anio);
         } else {
-            autores.stream()
-                    .distinct()
-                    .forEach(a -> System.out.println(a.getNombre() + " " + a.getApellido()));
+            autores.forEach(autor -> System.out.println(autor.getNombre() + " " + autor.getApellido()));
         }
     }
 
