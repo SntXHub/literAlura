@@ -19,15 +19,14 @@ public class Autor {
     private LocalDate fechaFallecimiento;
     private String nacionalidad;
 
-    public Autor() {
-    }
+    public Autor() {}
 
-    public Autor(String nombreCompleto, String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento, String nacionalidad) {
+    public Autor(String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento, String nacionalidad) {
         this.nombre = nombre;
         this.apellido = apellido;
-        this.fechaNacimiento = fechaNacimiento;
-        this.fechaFallecimiento = fechaFallecimiento;
-        this.nacionalidad = nacionalidad;
+        this.fechaNacimiento = fechaNacimiento != null ? fechaNacimiento : LocalDate.of(1, 1, 1);
+        this.fechaFallecimiento = fechaFallecimiento != null ? fechaFallecimiento : LocalDate.of(1, 1, 1);
+        this.nacionalidad = nacionalidad != null ? nacionalidad : "Sin información";
     }
 
     public Long getId() {

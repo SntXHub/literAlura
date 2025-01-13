@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,28 +20,58 @@ public class AutorService {
         this.autorRepository = autorRepository;
     }
 
-    public Autor guardarOActualizarAutor(Autor autor) {
-        Optional<Autor> autorExistente = autorRepository.findByNombre(autor.getNombre());
-        return autorExistente.orElseGet(() -> autorRepository.save(autor));
+    /**
+     * Convierte una entidad Autor en un DTO AutorDTO.
+     *
+     * @param autor la entidad Autor
+     * @return el DTO AutorDTO
+     */
+    private AutorDTO convertirADTO(Autor autor) {
+        return new AutorDTO(
+                autor.getId(),
+                autor.getNombre() != null ? autor.getNombre() : "Sin información",
+                autor.getApellido() != null ? autor.getApellido() : "Sin información",
+                autor.getNacionalidad() != null ? autor.getNacionalidad() : "Sin información"
+        );
     }
 
-    public List<AutorDTO> buscarPorNombreOApellido(String nombreOApellido) {
-        List<Autor> autores = autorRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(nombreOApellido, nombreOApellido);
-        return autores.stream()
-                .map(autor -> new AutorDTO(autor.getId(), autor.getNombre(), autor.getApellido(), autor.getNacionalidad()))
+    /**
+     * Busca autores por nombre o apellido.
+     *
+     * @param criterio el criterio de búsqueda
+     * @return una lista de DTOs AutorDTO
+     */
+    public List<AutorDTO> buscarPorNombreOApellido(String criterio) {
+        return autorRepository.findDistinctByNombreOrApellidoContainingIgnoreCase(criterio)
+                .stream()
+                .map(this::convertirADTO)
+                .distinct() // Remover duplicados en la lógica
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Obtiene todos los autores sin duplicados.
+     *
+     * @return una lista de DTOs AutorDTO
+     */
     public List<AutorDTO> obtenerTodosLosAutores() {
-        return autorRepository.findAll().stream()
-                .map(autor -> new AutorDTO(autor.getId(), autor.getNombre(), autor.getApellido(), autor.getNacionalidad()))
+        return autorRepository.findAllDistinct()
+                .stream()
+                .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
 
-    public List<AutorDTO> obtenerAutoresVivosEnAnio(LocalDate inicio, LocalDate fin) {
-        List<Autor> autores = autorRepository.findByFechaNacimientoBeforeAndFechaFallecimientoAfter(inicio, fin);
-        return autores.stream()
-                .map(autor -> new AutorDTO(autor.getId(), autor.getNombre(), autor.getApellido(), autor.getNacionalidad()))
+    /**
+     * Encuentra autores vivos en un año específico.
+     *
+     * @param fechaInicio inicio del rango de fechas
+     * @param fechaFin    fin del rango de fechas
+     * @return una lista de DTOs AutorDTO
+     */
+    public List<AutorDTO> obtenerAutoresVivosEnAnio(LocalDate fechaInicio, LocalDate fechaFin) {
+        return autorRepository.findAutoresVivosEnAnio(fechaInicio, fechaFin)
+                .stream()
+                .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
 }

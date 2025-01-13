@@ -13,6 +13,7 @@ public class Libro {
     private Long id;
 
     @NotBlank(message = "El título no puede estar vacío")
+    @Column(length = 500) // Aumentar el tamaño permitido
     private String titulo;
 
     @ManyToOne
@@ -95,9 +96,9 @@ public class Libro {
                 "ID=" + id +
                 ", Título='" + titulo + '\'' +
                 ", Autor='" + (autor != null ? autor.getNombre() + " " + autor.getApellido() : "Desconocido") + '\'' +
-                ", Año=" + (anioPublicacion != null ? anioPublicacion : "Sin información") +
-                ", Género='" + (genero != null ? genero : "Sin información") + '\'' +
-                ", Idioma='" + (idioma != null ? idioma : "Sin información") + '\'' +
+                ", Género='" + genero + '\'' +
+                ", Idioma='" + idioma + '\'' +
+                ", Año=" + (anioPublicacion != null && anioPublicacion != -1 ? anioPublicacion : "Sin información") +
                 '}';
     }
 }

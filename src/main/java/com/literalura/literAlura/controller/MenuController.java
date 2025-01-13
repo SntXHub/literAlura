@@ -8,10 +8,9 @@ import com.literalura.literAlura.service.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.text.Normalizer;
 import java.time.LocalDate;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @Controller
 public class MenuController {
@@ -95,15 +94,16 @@ public class MenuController {
 
     private void buscarAutorPorNombreApellido(Scanner scanner) {
         System.out.print("Ingrese el nombre o apellido del autor: ");
-        String nombreOApellido = scanner.nextLine();
-        List<AutorDTO> autores = autorService.buscarPorNombreOApellido(nombreOApellido);
+        String criterio = scanner.nextLine();
 
-        if (autores.isEmpty()) {
-            System.out.println("No se encontraron autores con el criterio: " + nombreOApellido);
+        Set<AutorDTO> autoresUnicos = new HashSet<>(autorService.buscarPorNombreOApellido(criterio));
+
+        if (autoresUnicos.isEmpty()) {
+            System.out.println("No se encontraron autores con el criterio: " + criterio);
         } else {
-            autores.stream()
-                    .distinct() // Evitar duplicados
-                    .forEach(autor -> System.out.println(autor.getNombre() + " " + autor.getApellido()));
+            autoresUnicos.forEach(autor ->
+                    System.out.println(autor.getNombre() + " " + autor.getApellido())
+            );
         }
     }
 
@@ -118,37 +118,28 @@ public class MenuController {
     }
 
     private void mostrarTodosLosAutores() {
-        List<AutorDTO> autores = autorService.obtenerTodosLosAutores();
+        Set<AutorDTO> autoresUnicos = new HashSet<>(autorService.obtenerTodosLosAutores());
 
-        if (autores.isEmpty()) {
+        if (autoresUnicos.isEmpty()) {
             System.out.println("No hay autores registrados en el sistema.");
         } else {
-            autores.forEach(autor -> System.out.println(autor.getId() + ": " + autor.getNombre() + " " + autor.getApellido()));
+            autoresUnicos.forEach(autor ->
+                    System.out.println(autor.getId() + ": " + autor.getNombre() + " " + autor.getApellido())
+            );
         }
     }
 
     private void listarLibrosPorIdioma(Scanner scanner) {
         System.out.print("Ingrese el idioma: ");
-        String idioma = scanner.nextLine().trim().toLowerCase()
-                .replace("á", "a").replace("é", "e")
-                .replace("í", "i").replace("ó", "o")
-                .replace("ú", "u");
+        String idiomaInput = scanner.nextLine().toLowerCase();
+        idiomaInput = Normalizer.normalize(idiomaInput, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
 
-        List<Libro> libros = libroService.obtenerLibrosPorIdioma(idioma);
+        List<Libro> libros = libroService.obtenerLibrosPorIdioma(idiomaInput);
 
         if (libros.isEmpty()) {
-            System.out.println("No hay libros en el idioma: " + idioma);
+            System.out.println("No hay libros en el idioma: " + idiomaInput);
         } else {
-            libros.forEach(libro -> {
-                System.out.println("Título: " + libro.getTitulo());
-                System.out.println("Autor: " + (libro.getAutor() != null
-                        ? libro.getAutor().getNombre() + " " + libro.getAutor().getApellido()
-                        : "Desconocido"));
-                System.out.println("Género: " + (libro.getGenero() != null ? libro.getGenero() : "Sin información"));
-                System.out.println("Idioma: " + libro.getIdioma());
-                System.out.println("Año: " + (libro.getAnioPublicacion() != null ? libro.getAnioPublicacion() : "Sin información"));
-                System.out.println("---");
-            });
+            libros.forEach(libro -> System.out.println(libro));
         }
     }
 
@@ -159,12 +150,14 @@ public class MenuController {
 
         LocalDate inicio = LocalDate.of(anio, 1, 1);
         LocalDate fin = LocalDate.of(anio, 12, 31);
-        List<AutorDTO> autores = autorService.obtenerAutoresVivosEnAnio(inicio, fin);
 
+        List<AutorDTO> autores = autorService.obtenerAutoresVivosEnAnio(inicio, fin);
         if (autores.isEmpty()) {
             System.out.println("No se encontraron autores vivos en el año: " + anio);
         } else {
-            autores.stream().distinct().forEach(autor -> System.out.println(autor.getNombre() + " " + autor.getApellido()));
+            autores.stream()
+                    .distinct()
+                    .forEach(a -> System.out.println(a.getNombre() + " " + a.getApellido()));
         }
     }
 

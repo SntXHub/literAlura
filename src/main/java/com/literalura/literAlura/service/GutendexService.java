@@ -11,21 +11,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class GutendexService {
 
     private final RestTemplate restTemplate;
-    private final LibroRepository libroRepository;
     private final AutorRepository autorRepository;
+    private final LibroRepository libroRepository;
 
     @Autowired
-    public GutendexService(RestTemplate restTemplate, LibroRepository libroRepository, AutorRepository autorRepository) {
+    public GutendexService(RestTemplate restTemplate, AutorRepository autorRepository, LibroRepository libroRepository) {
         this.restTemplate = restTemplate;
-        this.libroRepository = libroRepository;
         this.autorRepository = autorRepository;
+        this.libroRepository = libroRepository;
     }
 
     public List<Libro> buscarLibrosPorTitulo(String titulo) {
@@ -37,14 +37,15 @@ public class GutendexService {
             if (response != null && response.getBooks() != null) {
                 for (GutendexBook book : response.getBooks()) {
                     Autor autor = procesarAutor(book);
+                    Integer anioPublicacion = extraerAnioDeSubjects(book.getSubjects());
 
                     Libro libro = new Libro(
                             book.getId(),
                             book.getTitle(),
                             autor,
-                            extraerAnioDeSubjects(book.getSubjects()),
+                            anioPublicacion != null && anioPublicacion > 0 ? anioPublicacion : null,
                             extraerGenero(book),
-                            convertirIdioma(book.getLanguages())
+                            book.getLanguages().isEmpty() ? "Sin información" : convertirIdioma(book.getLanguages().get(0))
                     );
 
                     if (!libroRepository.existsById(libro.getId())) {
@@ -60,72 +61,64 @@ public class GutendexService {
         return libros;
     }
 
-    private Autor procesarAutor(GutendexBook book) {
-        if (book.getAuthors() == null || book.getAuthors().isEmpty()) {
-            return autorRepository.findByNombre("Desconocido")
-                    .orElseGet(() -> autorRepository.save(new Autor(
-                            "Desconocido",
-                            "Sin información",
-                            "Sin información",
-                            null,
-                            null,
-                            "Sin información" // Nacionalidad predeterminada
-                    )));
-        }
-
-        var firstAuthor = book.getAuthors().get(0);
-        String nombreCompleto = firstAuthor.getName();
-        String[] partes = nombreCompleto.split(",\\s*");
-        String apellido = partes.length > 0 ? partes[0] : "Sin información";
-        String nombre = partes.length > 1 ? partes[1] : "Desconocido";
-
-        return autorRepository.findByNombre(nombreCompleto)
-                .orElseGet(() -> autorRepository.save(new Autor(
-                        nombreCompleto,
-                        nombre,
-                        apellido,
-                        firstAuthor.getBirthYear() != null ? LocalDate.of(firstAuthor.getBirthYear(), 1, 1) : null,
-                        firstAuthor.getDeathYear() != null ? LocalDate.of(firstAuthor.getDeathYear(), 1, 1) : null,
-                        "Sin información" // Nacionalidad predeterminada
-                )));
-    }
-
     private Integer extraerAnioDeSubjects(List<String> subjects) {
-        if (subjects == null || subjects.isEmpty()) {
-            return null; // Retorna null si no hay información
-        }
         for (String subject : subjects) {
             try {
-                if (subject.matches(".*\\(\\d{4}\\).*")) {
-                    String year = subject.replaceAll(".*\\((\\d{4})\\).*", "$1");
+                if (subject.matches(".*\\b(\\d{4})\\b.*")) { // Busca un año válido (4 dígitos)
+                    String year = subject.replaceAll(".*\\b(\\d{4})\\b.*", "$1");
                     return Integer.parseInt(year);
                 }
             } catch (NumberFormatException e) {
                 System.out.println("No se pudo extraer el año de: " + subject);
             }
         }
-        return null; // Retorna null si no se encuentra el año
+        return null; // Devuelve null si no se encuentra un año válido
+    }
+
+    private String convertirIdioma(String codigoIdioma) {
+        return switch (codigoIdioma.toLowerCase()) {
+            case "en" -> "Inglés";
+            case "es" -> "Español";
+            case "fr" -> "Francés";
+            case "de" -> "Alemán";
+            case "it" -> "Italiano";
+            case "pt" -> "Portugués";
+            default -> "Desconocido";
+        };
+    }
+
+    private Autor procesarAutor(GutendexBook book) {
+        if (book.getAuthors() == null || book.getAuthors().isEmpty()) {
+            return autorRepository.findByNombre(nombreCompleto)
+                    .orElseGet(() -> autorRepository.save(new Autor(
+                            nombre,
+                            apellido,
+                            firstAuthor.getBirthYear() != null ? LocalDate.of(firstAuthor.getBirthYear(), 1, 1) : null,
+                            firstAuthor.getDeathYear() != null ? LocalDate.of(firstAuthor.getDeathYear(), 1, 1) : null,
+                            "Sin información"
+                    )));
+        }
+
+        var firstAuthor = book.getAuthors().get(0);
+        String nombreCompleto = firstAuthor.getName();
+        String[] partes = nombreCompleto.split(" ", 2); // Dividir nombre y apellido
+        String nombre = partes.length > 0 ? partes[0] : "Desconocido";
+        String apellido = partes.length > 1 ? partes[1] : "Sin información";
+
+        return autorRepository.findByNombre(nombreCompleto)
+                .orElseGet(() -> autorRepository.save(new Autor(
+                        nombre,
+                        apellido,
+                        firstAuthor.getBirthYear() != null ? LocalDate.of(firstAuthor.getBirthYear(), 1, 1) : null,
+                        firstAuthor.getDeathYear() != null ? LocalDate.of(firstAuthor.getDeathYear(), 1, 1) : null,
+                        "Sin información"
+                )));
     }
 
     private String extraerGenero(GutendexBook book) {
         if (book.getBookshelves() != null && !book.getBookshelves().isEmpty()) {
-            String genero = book.getBookshelves().get(0);
-            return genero.replace("Browsing:", "").trim();
+            return book.getBookshelves().get(0);
         }
         return "Sin información";
-    }
-
-    private String convertirIdioma(List<String> languages) {
-        if (languages != null && !languages.isEmpty()) {
-            return switch (languages.get(0).toLowerCase()) {
-                case "en" -> "Inglés";
-                case "es" -> "Español";
-                case "fr" -> "Francés";
-                case "de" -> "Alemán";
-                case "pt" -> "Portugués";
-                default -> "Idioma desconocido";
-            };
-        }
-        return "Idioma desconocido";
     }
 }
