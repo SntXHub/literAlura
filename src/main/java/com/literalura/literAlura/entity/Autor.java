@@ -1,35 +1,40 @@
 package com.literalura.literAlura.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 @Entity
 public class Autor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "El nombre no debe estar vacío")
+    @Column(name = "nombre")
     private String nombre;
 
-    @NotBlank
+    @NotBlank(message = "El apellido no debe estar vacío")
+    @Column(name = "apellido")
     private String apellido;
 
+    @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
+
+    @Column(name = "fecha_fallecimiento")
     private LocalDate fechaFallecimiento;
+
+    @Column(name = "nacionalidad")
     private String nacionalidad;
 
-    // Constructor vacío
+    // Constructor vacío para JPA
     public Autor() {}
 
     // Constructor con parámetros
     public Autor(String nombre, String apellido, LocalDate fechaNacimiento, LocalDate fechaFallecimiento, String nacionalidad) {
-        this.nombre = nombre != null ? nombre : "Desconocido";
-        this.apellido = apellido != null ? apellido : "Desconocido";
+        this.nombre = nombre;
+        this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
         this.fechaFallecimiento = fechaFallecimiento;
         this.nacionalidad = nacionalidad != null ? nacionalidad : "Sin información";

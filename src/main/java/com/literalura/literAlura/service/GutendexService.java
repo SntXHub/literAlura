@@ -89,19 +89,23 @@ public class GutendexService {
 
     private Autor procesarAutor(GutendexBook book) {
         if (book.getAuthors() == null || book.getAuthors().isEmpty()) {
-            return autorRepository.findByNombreAndApellido("Desconocido", "Sin información")
+            return autorRepository.findByNombreAndApellido("Sin información", "Desconocido")
                     .orElseGet(() -> autorRepository.save(new Autor(
-                            "Desconocido", // Nombre
-                            "Sin información", // Apellido
-                            null,
-                            null,
-                            "Sin información"
+                            "Sin información", // Nombre
+                            "Desconocido", // Apellido
+                            null, // Fecha de nacimiento
+                            null, // Fecha de fallecimiento
+                            "Sin información" // Nacionalidad
                     )));
         }
 
         var firstAuthor = book.getAuthors().get(0);
-        String nombre = firstAuthor.getName().split(" ")[0]; // Primera parte como nombre
-        String apellido = firstAuthor.getName().substring(nombre.length()).trim(); // El resto como apellido
+        String nombreCompleto = firstAuthor.getName();
+        String[] partes = nombreCompleto.split(" ", 2); // Dividir en nombre y apellido
+
+        // Ajustar el apellido y nombre eliminando comas y espacios adicionales
+        String apellido = partes.length > 0 ? partes[0].replaceAll(",", "").trim() : "Desconocido";
+        String nombre = partes.length > 1 ? partes[1].trim() : "Sin información";
 
         return autorRepository.findByNombreAndApellido(nombre, apellido)
                 .orElseGet(() -> autorRepository.save(new Autor(
