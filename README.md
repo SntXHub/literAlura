@@ -61,7 +61,6 @@
 
 ### **Prerrequisitos**
 - Java 17
-- Maven instalado
 - PostgreSQL configurado
 
 ### Configuración del Proyecto
@@ -80,15 +79,6 @@ Crear una base de datos llamada literalura y actualizar las credenciales en el a
 spring.datasource.url=jdbc:postgresql://localhost:5432/literalura
 spring.datasource.username=tu_usuario
 spring.datasource.password=tu_contraseña
-   ```
-
----
-
-### Construir el proyecto con Maven y ejecutar la aplicación
-
-   ```bash
-   mvn clean install
-   mvn spring-boot:run
    ```
 
 ---
@@ -126,7 +116,7 @@ Este proyecto está licenciado bajo la licencia MIT
 ## Créditos
 
 Este proyecto fue desarrollado por **Santiago Gabriel Cabrera** como parte de un aprendizaje y práctica continua en 
-desarrollo backend con Java y Spring Boot.
+desarrollo backend con Java y Spring Boot. Toda colaboración es bienvenida.
 
 ---
 
